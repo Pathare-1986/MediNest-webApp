@@ -9,8 +9,8 @@ const Navbar = () => {
   const [token, setToken] = useState(true);
 
   return (
-    <div className="flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400">
-      <img src={assets.logo} alt="logoImage" className="w-44 cursor-pointer" />
+    <div className="flex items-center justify-between text-sm py-1 mb-5 border-b border-b-gray-400">
+      <NavLink to="/"><img src={assets.logo} alt="logoImage" className="cursor-pointer" style={{width:"13rem"}}/></NavLink>
       <ul className="hidden md:flex items-start gap-5 font-medium">
         <NavLink to="/">
           <li className="py-1">HOME</li>

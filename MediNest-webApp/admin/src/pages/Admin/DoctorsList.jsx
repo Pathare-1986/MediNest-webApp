@@ -1,6 +1,6 @@
 import React from 'react'
 import { useContext } from 'react'
-import { AdminContext } from '../../context/AdminContext'
+import { AdminContext } from '../../context/AdminContext.jsx'
 import { useEffect } from 'react'
 
 const DoctorsList = () => {

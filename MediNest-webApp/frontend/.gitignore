@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+node_modules/
+# environment variables
+.env
+
+# build outputs
+dist/
+build/
+
+# misc
+test.html

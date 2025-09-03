@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
 import RelatedDoctors from "../components/RelatedDoctors";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Appointments = () => {
   const [docInfo, setDocInfo] = useState(null);
@@ -11,9 +13,12 @@ const Appointments = () => {
   const [slotIndex, seSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState("");
 
+  const navigate = useNavigate();
+
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const { docId } = useParams();
-  const { doctors, currencySymbol } = useContext(AppContext);
+  const { doctors, currencySymbol, backendUrl, getDoctorsData, token } =
+    useContext(AppContext);
 
   const fetchDocInfo = async () => {
     const docInfo = doctors.find((doc) => doc._id == docId);
@@ -21,50 +26,157 @@ const Appointments = () => {
   };
 
   const getAvailableSlots = async () => {
-    setDoctSlots([]);
+  if (!docInfo || !docInfo.slots_booked) {
+    console.warn("Doctor info or slots_booked is missing.");
+    return;
+  }
 
-    // getting current data
-    let today = new Date();
+  setDoctSlots([]);
 
-    for (let i = 0; i < 7; i++) {
-      // getting data with index
-      let currentDate = new Date(today);
-      currentDate.setDate(today.getDate() + i);
+  let today = new Date();
+  let allSlots = [];
+  let startDayIndex = 0;
 
-      // setting end time of the date with index
-      let endTime = new Date();
-      endTime.setDate(today.getDate() + i);
-      endTime.setHours(21, 0, 0, 0);
+  // Check if today is too late for appointments (after 8 PM)
+  const currentHour = today.getHours();
+  if (currentHour >= 20) {
+    startDayIndex = 1; // Start from tomorrow
+  }
 
-      //setting hours
-      if (today.getDate() === currentDate.getDate()) {
-        currentDate.setHours(
-          currentDate.getHours() > 10 ? currentDate.getHours() + 1 : 10
-        );
-        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
+  for (let i = startDayIndex; i < 7; i++) {
+    let currentDate = new Date(today);
+    currentDate.setDate(today.getDate() + i);
+
+    let endTime = new Date(today);
+    endTime.setDate(today.getDate() + i);
+    endTime.setHours(21, 0, 0, 0);
+
+    // Set start time for the day
+    let startTime = new Date(today);
+    startTime.setDate(today.getDate() + i);
+    
+    if (i === 0) {
+      // For today, start from current time + 1 hour or 10 AM, whichever is later
+      const now = new Date();
+      const currentHour = now.getHours();
+      
+      if (currentHour >= 10 && currentHour < 20) {
+        // If it's between 10 AM and 8 PM, start from current hour + 1
+        startTime.setHours(currentHour + 1);
+        startTime.setMinutes(0);
       } else {
-        currentDate.setHours(10);
-        currentDate.setMinutes(0);
+        // If it's before 10 AM, start from 10 AM
+        startTime.setHours(10);
+        startTime.setMinutes(0);
       }
-      let timeSlots = [];
+    } else {
+      // For future days, start from 10 AM
+      startTime.setHours(10);
+      startTime.setMinutes(0);
+    }
 
-      while (currentDate < endTime) {
-        let formattedTime = currentDate.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+    let timeSlots = [];
+    let slotTime = new Date(startTime);
 
-        // add slots to array
+    while (slotTime < endTime) {
+      let formattedTime = slotTime.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      let day = slotTime.getDate();
+      let month = slotTime.getMonth() + 1;
+      let year = slotTime.getFullYear();
+
+      const slotDate = `${day}_${month}_${year}`;
+
+      const isSlotAvailable =
+        docInfo.slots_booked[slotDate] &&
+        docInfo.slots_booked[slotDate].includes(formattedTime)
+          ? false
+          : true;
+
+      if (isSlotAvailable) {
         timeSlots.push({
-          dataTime: new Date(currentDate),
+          dataTime: new Date(slotTime),
           time: formattedTime,
         });
-
-        // Increment current time by 30 min
-        currentDate.setMinutes(currentDate.getMinutes() + 30);
       }
 
-      setDoctSlots((prev) => [...prev, timeSlots]);
+      slotTime.setMinutes(slotTime.getMinutes() + 30);
+    }
+
+    allSlots.push(timeSlots);
+  }
+
+  setDoctSlots(allSlots);
+
+  // Find first available slot day
+  const firstAvailableIndex = allSlots.findIndex(daySlots => daySlots.length > 0);
+
+  if (firstAvailableIndex !== -1) {
+    setSlotIndex(firstAvailableIndex);
+    setSlotTime("");
+    console.log("First available slot day index:", firstAvailableIndex);
+  } else {
+    setSlotIndex(0);
+    setSlotTime("");
+    console.log("No available slots in the next 7 days.");
+  }
+
+  console.log("Slots updated:", allSlots);
+};
+
+
+  const bookAppointment = async () => {
+    if (!token) {
+      toast.warn("Login to book appointment");
+      return navigate("/login");
+    }
+
+    // Check if slots exist for the selected day
+    if (!doctSlots[slotIndex] || doctSlots[slotIndex].length === 0) {
+      toast.error("No available slots for this day. Please select another day.");
+      return;
+    }
+
+    // Check if user selected a time
+    if (!slotTime) {
+      toast.error("Please select a time slot before booking.");
+      return;
+    }
+
+    try {
+      // Find the selected time slot from the available slots
+      const selectedSlot = doctSlots[slotIndex].find(slot => slot.time === slotTime);
+      
+      if (!selectedSlot) {
+        toast.error("Selected time slot is no longer available.");
+        return;
+      }
+
+      const date = selectedSlot.dataTime;
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+
+      const slotDate = day + "_" + month + "_" + year;
+
+      const { data } = await axios.post(
+        backendUrl + "/api/user/book-appointment",
+        { docId, slotDate, slotTime },
+        { headers: { token } }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        getDoctorsData();
+        navigate("/my-appointments");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -156,6 +268,7 @@ const Appointments = () => {
           </div>
           <div className="flex items-center gap-3 w-full overflow-x-scroll mt-4">
             {doctSlots.length &&
+              doctSlots[slotIndex]?.length > 0 &&
               doctSlots[slotIndex].map((item, index) => (
                 <p
                   onClick={() => setSlotTime(item.time)}
@@ -170,7 +283,10 @@ const Appointments = () => {
                 </p>
               ))}
           </div>
-          <button className="bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6">
+          <button
+            onClick={bookAppointment}
+            className="bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6"
+          >
             Book an appointment
           </button>
         </div>

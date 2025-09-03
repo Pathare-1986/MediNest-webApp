@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import Login from './pages/Login'
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import { AdminContext } from './context/adminContext';
+import { AdminContext } from './context/AdminContext.jsx';
 import Navbar from './components/Navbar';
 import SideBar from './components/SideBar';
 import { Route, Routes } from 'react-router-dom';
@@ -27,6 +27,8 @@ function App() {
           <Route path="/add-doctor" element={<AddDoctor />}/>
           <Route path="/doctor-list" element={<DoctorsList/>}/>
         </Routes>
+        <ToastContainer/>
+        
       </div>
     </div>
   ):(

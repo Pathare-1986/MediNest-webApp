@@ -62,10 +62,18 @@ const Login = () => {
             : <p>Admin Login? <span className="text-primary underline cursor-pointer" onClick={()=>setState("Admin")}>Click here</span></p>
         }
         {state === "Admin" && (
-          <div className="w-full mt-1 rounded-md border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-xs text-gray-600">
-            <p className="font-semibold text-gray-700">Admin credentials</p>
-            <p className="mt-1"><span className="text-gray-700">Admin username:</span> <span className="font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB]">admin@medinest.com</span></p>
-            <p className="mt-1"><span className="text-gray-700">Admin password:</span> <span className="font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB]">admin123</span></p>
+          <div className="w-full mt-2 rounded-md border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-3 text-xs text-gray-600">
+            <p className="font-semibold text-gray-700 mb-1">Admin credentials</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>
+                <span className="text-gray-700">Admin username:</span>
+                <span className="ml-1 font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB]">admin@medinest.com</span>
+              </li>
+              <li>
+                <span className="text-gray-700">Admin password:</span>
+                <span className="ml-1 font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB]">admin123</span>
+              </li>
+            </ul>
           </div>
         )}
       </div>

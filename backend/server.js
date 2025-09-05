@@ -15,7 +15,7 @@ connectCloudinary()
 
 const allowedOrigins = [
     "https://medi-nest-web-app-git-main-pathare-1986s-projects.vercel.app",
-    "https://medinestweb.vercel.app/"
+    "https://medinestweb.vercel.app"
 ];
   
 

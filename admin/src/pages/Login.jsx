@@ -61,6 +61,9 @@ const Login = () => {
             ? <p>Doctor Login? <span className="text-primary underline cursor-pointer" onClick={()=>setState("Doctor")}>Click here</span></p>
             : <p>Admin Login? <span className="text-primary underline cursor-pointer" onClick={()=>setState("Admin")}>Click here</span></p>
         }
+        {state === "Admin" && (
+          <p className="text-xs text-gray-500">Admin credentials: admin@medinest.com / admin123</p>
+        )}
       </div>
     </form>
   );

@@ -9,7 +9,7 @@ import MyAppointments from "./pages/MyAppointments";
 import MyProfile from "./pages/MyProfile";
 import Appointments from "./pages/Appointments";
 import Navbar from "./components/Navbar";
-import Footer from "./components/footer";
+import Footer from "./components/Footer";
 import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

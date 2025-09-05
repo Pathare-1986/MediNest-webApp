@@ -134,4 +134,4 @@ admin/
 ## Notes
 - CORS is enabled with credentials; ensure frontend/admin origins match when deploying.
 - Ensure MongoDB and Cloudinary credentials are valid before starting the backend.
-## Live :https://medinestweb.vercel.app/login
+## Live :https://medinestweb.vercel.app/

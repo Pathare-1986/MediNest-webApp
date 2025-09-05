@@ -63,9 +63,9 @@ const Login = () => {
         }
         {state === "Admin" && (
           <div className="w-full mt-1 rounded-md border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-xs text-gray-600">
-            <span className="font-medium mr-1">Admin credentials:</span>
-            <span className="font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB] mr-1">admin@medinest.com</span>
-            <span className="font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB]">admin123</span>
+            <p className="font-semibold text-gray-700">Admin credentials</p>
+            <p className="mt-1"><span className="text-gray-700">Admin username:</span> <span className="font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB]">admin@medinest.com</span></p>
+            <p className="mt-1"><span className="text-gray-700">Admin password:</span> <span className="font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB]">admin123</span></p>
           </div>
         )}
       </div>

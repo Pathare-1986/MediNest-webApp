@@ -62,7 +62,11 @@ const Login = () => {
             : <p>Admin Login? <span className="text-primary underline cursor-pointer" onClick={()=>setState("Admin")}>Click here</span></p>
         }
         {state === "Admin" && (
-          <p className="text-xs text-gray-500">Admin credentials: admin@medinest.com / admin123</p>
+          <div className="w-full mt-1 rounded-md border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-xs text-gray-600">
+            <span className="font-medium mr-1">Admin credentials:</span>
+            <span className="font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB] mr-1">admin@medinest.com</span>
+            <span className="font-mono bg-white/70 px-1 py-0.5 rounded border border-[#E5E7EB]">admin123</span>
+          </div>
         )}
       </div>
     </form>

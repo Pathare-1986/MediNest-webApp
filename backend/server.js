@@ -15,7 +15,7 @@ connectCloudinary()
 
 const allowedOrigins = [
     "https://medi-nest-web-app-git-main-pathare-1986s-projects.vercel.app",
-    // add patient site when deployed, e.g. "https://your-frontend.vercel.app"
+    "https://medinestweb.vercel.app/"
 ];
   
 

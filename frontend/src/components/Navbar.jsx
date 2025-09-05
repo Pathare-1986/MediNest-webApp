@@ -15,6 +15,8 @@ const Navbar = () => {
     localStorage.removeItem("token");
   };
 
+  const adminUrl = import.meta.env.VITE_ADMIN_URL || "#";
+
   return (
     <div className="flex items-center justify-between text-sm py-1 mb-5 border-b border-b-gray-400">
       <NavLink to="/">
@@ -45,6 +47,11 @@ const Navbar = () => {
           <li className="py-1">CONTACT</li>
           <hr className="border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden" />
         </NavLink>
+
+        <a href={adminUrl} target="_blank" rel="noopener noreferrer">
+          <li className="py-1">ADMIN</li>
+          <hr className="border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden" />
+        </a>
       </ul>
       <div className="flex items-center gap-4">
         {token && userData ? (
@@ -127,6 +134,9 @@ const Navbar = () => {
             <NavLink onClick={() => setShowMenu(false)} to="/contact">
               <p className="px-4 py-2 rounded inline-block">CONTACT</p>
             </NavLink>
+            <a onClick={() => setShowMenu(false)} href={adminUrl} target="_blank" rel="noopener noreferrer">
+              <p className="px-4 py-2 rounded inline-block">ADMIN</p>
+            </a>
           </ul>
         </div>
       </div>
@@ -135,3 +145,8 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+                  
+       
+       

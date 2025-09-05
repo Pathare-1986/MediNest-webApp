@@ -33,3 +33,22 @@ build/
 
 # misc
 test.html
+
+# additional environment variants
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# caches
+.vite
+.parcel-cache
+.eslintcache
+.cache
+
+# test coverage
+coverage
+
+# platform/hosting
+.vercel
+.netlify
